@@ -5,6 +5,8 @@ PROJECT_ID="dev-advocacy-380120"
 SERVICE_NAME="meeting-cost-dashboard"
 REGION="us-central1"
 
+cd bingo && npm install && npm run build && cd ..
+
 # Build the Docker image for x86_64 (Cloud Run compatibility)
 echo "Building Docker image for x86_64 platform..."
 docker build --platform linux/amd64 -t gcr.io/$PROJECT_ID/$SERVICE_NAME .

@@ -14,6 +14,20 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS middleware - allow all origins
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://play.grafana.org');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', '*');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // LRU cache for crappykv with max 1000 entries
 const kvStore = new LRUCache({
   max: 1000,
@@ -128,6 +142,30 @@ app.get('/meetingCost', (req, res) => {
     elapsedSeconds: elapsedSeconds,
     totalMeetingCostSoFar: totalMeetingCostSoFar
   });
+});
+
+// Serve static files from the React app build at root
+app.use('/', express.static('bingo/build'));
+
+// Serve the React app at root
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: 'bingo/build' });
+});
+
+// Handle React app routing - serve index.html for any route that's not an API endpoint
+app.get('*', (req, res) => {
+  // Skip API endpoints
+  if (req.path.startsWith('/time') || 
+      req.path.startsWith('/crappykv') || 
+      req.path.startsWith('/meetingCost') || 
+      req.path.startsWith('/redirect') || 
+      req.path.startsWith('/health') ||
+      req.path.startsWith('/startup')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  
+  // Serve React app for all other routes
+  res.sendFile('index.html', { root: 'bingo/build' });
 });
 
 // Redirect endpoint (migrated from redirect.js)

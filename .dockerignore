@@ -8,3 +8,5 @@ README.md
 coverage
 .DS_Store
 *.log
+bingo/node_modules
+bingo/build

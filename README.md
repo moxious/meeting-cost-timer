@@ -9,21 +9,53 @@ A unified Express.js application that provides various utility endpoints, migrat
 - **`/meetingCost`** - Calculate meeting costs based on attendees and duration
 - **`/redirect`** - Redirect to Grafana dashboard
 - **`/health`** - Health check endpoint
-- **`/`** - API documentation
+- **`/`** - Interactive BINGO board game (React app)
+- **`/startup`** - Startup probe endpoint
+
+## React BINGO App
+
+The root `/` endpoint serves a complete React application featuring:
+
+- **5x5 BINGO board** with meeting-related phrases instead of traditional numbers
+- **Free space** in the center position
+- **Clickable buttons** that stay depressed when marked
+- **Random phrase generation** for each new game with no duplicates
+- **Responsive design** for mobile and desktop
+- **New Game button** to reset and generate a new board
+
+**Note**: All API endpoints (`/time`, `/crappykv`, `/meetingCost`, etc.) remain accessible at their specific paths and are not affected by the React app routing.
+
+### Features:
+- **Meeting-themed phrases** like "Meeting that could have been an email" and "Someone says 'Let me share my screen'"
+- **No duplicate phrases** on any single board
+- **Visual feedback** for marked/unmarked cells
+- **Hover effects** and smooth transitions
+- **Mobile-responsive design** with optimized text sizing
 
 ## Local Development
 
 1. Install dependencies:
    ```bash
    npm install
+   cd bingo && npm install
    ```
 
-2. Start the development server:
+2. Build the React app:
+   ```bash
+   cd bingo && npm run build
+   cd ..
+   ```
+   
+   **Important**: The React app must be built with `npm run build` in the `bingo/` directory before starting the Express server. This creates the production build that Express serves.
+
+3. Start the development server:
    ```bash
    npm run dev
    ```
 
-3. The server will run on `http://localhost:8080`
+4. The server will run on `http://localhost:8080`
+   - API endpoints: `http://localhost:8080/time`, `/crappykv`, etc.
+   - BINGO app: `http://localhost:8080/` (root path)
 
 ## API Usage Examples
 
@@ -46,9 +78,10 @@ curl "http://localhost:8080/crappykv?key=name"
 curl "http://localhost:8080/meetingCost?attendees=5&cost=100&startTime=1640995200"
 ```
 
-### Redirect
+### BINGO App
 ```bash
-curl -L "http://localhost:8080/redirect"
+# Open in browser
+open "http://localhost:8080/"
 ```
 
 ## Docker Deployment
@@ -94,7 +127,8 @@ gcloud run deploy meeting-cost-timer \
 
 ## Architecture
 
-- **Express.js** - Web framework
+- **Express.js** - Web framework and API server
+- **React** - Frontend BINGO game application
 - **In-memory storage** - Simple key-value store (data is not persisted)
 - **Docker** - Containerization for Cloud Run deployment
 - **Alpine Linux** - Minimal base image for smaller container size
@@ -103,6 +137,6 @@ gcloud run deploy meeting-cost-timer \
 
 - The key-value store (`/crappykv`) is in-memory and will reset when the container restarts
 - All endpoints maintain the exact same API contract as the original Google Cloud Functions
+- The React BINGO app is built during Docker build and served statically by Express
 - The app is configured to run on port 8080 (Google Cloud Run default)
 - Health checks are included for Cloud Run monitoring
-
