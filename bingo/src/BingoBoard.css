@@ -1,10 +1,12 @@
 .bingo-container {
-  text-align: center;
-  padding: 20px;
+  text-align: left;
+  padding: 5px 20px;
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   color: white;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .bingo-container h1 {
@@ -97,7 +99,7 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: block;
-  margin: 20px auto;
+  margin: 5px auto 0 auto;
 }
 
 .reset-button:hover {
@@ -113,7 +115,7 @@
 /* Responsive design for different screen sizes */
 @media (max-width: 480px) {
   .bingo-container {
-    padding: 5px;
+    padding: 5px 10px;
   }
   
   .bingo-board {
@@ -137,6 +139,10 @@
 }
 
 @media (min-width: 1200px) {
+  .bingo-container {
+    padding: 5px 30px;
+  }
+  
   .bingo-board {
     padding: 12px;
   }

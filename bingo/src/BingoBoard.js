@@ -9,7 +9,7 @@ const BingoBoard = () => {
         "need to jump", "synergy", "proactive", "out of the box", "best practice", "low hanging fruit",
       ],
       I: [
-        "low hanging fruit", "quick win", "alignment", "value added",
+        "low hanging fruit", "quick win", "alignment", "value added", "touch base", "mission critical",
       ],
       N: [
         "peel the onion", "in the loop", "in the weeds", "paradigm shift",
@@ -110,9 +110,6 @@ const BingoBoard = () => {
 
   return (
     <div className="bingo-container">
-      <button className="reset-button" onClick={resetBoard}>
-        New Game
-      </button>
       <div className="bingo-board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="bingo-row">
@@ -131,6 +128,9 @@ const BingoBoard = () => {
           </div>
         ))}
       </div>
+      <button className="reset-button" onClick={resetBoard}>
+        New Game
+      </button>
     </div>
   );
 };
