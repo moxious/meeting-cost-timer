@@ -56,7 +56,20 @@ const BingoBoard = () => {
     return board;
   };
 
-  const [board, setBoard] = useState(generateBoard());
+  const [board, setBoard] = useState(() => {
+    // Try to load saved board state from localStorage
+    const savedBoard = localStorage.getItem('bingoBoardState');
+    if (savedBoard) {
+      try {
+        return JSON.parse(savedBoard);
+      } catch (e) {
+        console.log('Failed to parse saved board state, generating new board');
+      }
+    }
+    // Generate new board if no saved state exists
+    return generateBoard();
+  });
+  
   const [marked, setMarked] = useState(() => {
     // Try to load saved marked state from localStorage
     const saved = localStorage.getItem('bingoMarkedState');
@@ -79,17 +92,20 @@ const BingoBoard = () => {
     newMarked[row][col] = !newMarked[row][col];
     setMarked(newMarked);
     
-    // Save the new marked state to localStorage
+    // Save both board and marked state to localStorage
+    localStorage.setItem('bingoBoardState', JSON.stringify(board));
     localStorage.setItem('bingoMarkedState', JSON.stringify(newMarked));
   };
 
   const resetBoard = () => {
-    setBoard(generateBoard());
+    const newBoard = generateBoard();
+    setBoard(newBoard);
     const newMarked = Array(5).fill().map(() => Array(5).fill(false));
     setMarked(newMarked);
     
-    // Clear the saved state when resetting
-    localStorage.removeItem('bingoMarkedState');
+    // Save the new board and clear the marked state
+    localStorage.setItem('bingoBoardState', JSON.stringify(newBoard));
+    localStorage.setItem('bingoMarkedState', JSON.stringify(newMarked));
   };
 
   return (
