@@ -119,6 +119,10 @@ const BingoBoard = () => {
 
   return (
     <div className="bingo-container">
+      <button className="reset-button" onClick={resetBoard}>
+        New Game
+      </button>
+
       <div className="bingo-board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="bingo-row">
@@ -137,9 +141,6 @@ const BingoBoard = () => {
           </div>
         ))}
       </div>
-      <button className="reset-button" onClick={resetBoard}>
-        New Game
-      </button>
     </div>
   );
 };
