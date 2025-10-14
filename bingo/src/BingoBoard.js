@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './BingoBoard.css';
 
 const BingoBoard = () => {
+  const BOARD_VERSION = 2; // Increment this when phrases change
+  
   // Initialize the BINGO board with BINGO column structure
   const generateBoard = () => {
     const phrases = {
@@ -12,10 +14,10 @@ const BingoBoard = () => {
         "low hanging fruit", "quick win", "alignment", "value added", "touch base", "mission critical",
       ],
       N: [
-        "peel the onion", "in the loop", "in the weeds", "paradigm shift",
+        "peel the onion", "in the loop", "in the weeds", "paradigm shift", "realign",
       ],
       G: [
-        "leverage", "lots of moving parts", "no bandwidth", "on the same page", "best practice",
+        "leverage", "lots of moving parts", "bandwidth", "on the same page", "best practice",
       ],
       O: [
         "share my screen", "sorry I'm late", "can you hear me?",
@@ -57,17 +59,22 @@ const BingoBoard = () => {
   };
 
   const [board, setBoard] = useState(() => {
-    // Try to load saved board state from localStorage
+    // Check if saved board version matches current version
+    const savedVersion = localStorage.getItem('bingoBoardVersion');
     const savedBoard = localStorage.getItem('bingoBoardState');
-    if (savedBoard) {
+    
+    if (savedBoard && savedVersion === String(BOARD_VERSION)) {
       try {
         return JSON.parse(savedBoard);
       } catch (e) {
         console.log('Failed to parse saved board state, generating new board');
       }
     }
-    // Generate new board if no saved state exists
-    return generateBoard();
+    // Generate new board if no saved state exists or version mismatch
+    const newBoard = generateBoard();
+    localStorage.setItem('bingoBoardVersion', String(BOARD_VERSION));
+    localStorage.setItem('bingoBoardState', JSON.stringify(newBoard));
+    return newBoard;
   });
   
   const [marked, setMarked] = useState(() => {
@@ -93,6 +100,7 @@ const BingoBoard = () => {
     setMarked(newMarked);
     
     // Save both board and marked state to localStorage
+    localStorage.setItem('bingoBoardVersion', String(BOARD_VERSION));
     localStorage.setItem('bingoBoardState', JSON.stringify(board));
     localStorage.setItem('bingoMarkedState', JSON.stringify(newMarked));
   };
@@ -104,6 +112,7 @@ const BingoBoard = () => {
     setMarked(newMarked);
     
     // Save the new board and clear the marked state
+    localStorage.setItem('bingoBoardVersion', String(BOARD_VERSION));
     localStorage.setItem('bingoBoardState', JSON.stringify(newBoard));
     localStorage.setItem('bingoMarkedState', JSON.stringify(newMarked));
   };
